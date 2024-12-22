@@ -1,9 +1,9 @@
 import { AdmittanceInstructions, TopicManager } from '@bsv/overlay'
 import { Transaction, ProtoWallet, Utils } from '@bsv/sdk'
 import docs from './MeterTopicDocs.md.js'
-import meterContractJson from '../../artifacts/Meter.json' with { type: "json" }
-import { MeterContract } from '../contracts/Meter.js'
-MeterContract.loadArtifact(meterContractJson)
+import WisnaeMeterContractJson from '../../artifacts/Meter.json' with { type: "json" }
+import { WisnaeMeterContract } from '../contracts/Meter.js'
+WisnaeMeterContract.loadArtifact(WisnaeMeterContractJson)
 
 const anyoneWallet = new ProtoWallet('anyone')
 
@@ -28,7 +28,7 @@ export default class MeterTopicManager implements TopicManager {
           // Parse sCrypt locking script
           const script = output.lockingScript.toHex()
           // Ensure Meter can be constructed from script
-          const meter = MeterContract.fromLockingScript(script) as MeterContract
+          const meter = WisnaeMeterContract.fromLockingScript(script) as WisnaeMeterContract
           console.log(meter)
           // This is where other overlay-level validation rules would be enforced
           // Verify creator signature came from creator public key

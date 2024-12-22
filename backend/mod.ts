@@ -1,4 +1,4 @@
-export { MeterContract } from './src/contracts/Meter.js'
+export { WisnaeMeterContract } from './src/contracts/Meter.js'
 export { default as MeterArtifact } from './artifacts/Meter.json'
 export { default as MeterLookupServiceFactory } from './src/lookup-services/MeterLookupServiceFactory.js'
 export { default as MeterTopicManager } from './src/topic-managers/MeterTopicDocs.md.js'

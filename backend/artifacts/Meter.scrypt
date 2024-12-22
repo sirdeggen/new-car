@@ -1,5 +1,5 @@
 
-contract MeterContract {
+contract WisnaeMeterContract {
   @state int count;
   @state bytes creatorIdentityKey;
   @state bytes creatorSignature;

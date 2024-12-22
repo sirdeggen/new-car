@@ -20,10 +20,10 @@ import {
 import { type Meter, type Token } from './types/types'
 import './App.scss'
 import { IdentityCard } from 'metanet-identity-react'
-import { MeterContract, MeterArtifact } from '@bsv/backend'
+import { WisnaeMeterContract, MeterArtifact } from '@bsv/backend'
 import { SHIPBroadcaster, LookupResolver, Transaction, Utils, ProtoWallet } from '@bsv/sdk'
 import { toEnvelopeFromBEEF } from '@babbage/sdk-ts/out/src/utils/toBEEF'
-MeterContract.loadArtifact(MeterArtifact)
+WisnaeMeterContract.loadArtifact(MeterArtifact)
 import { bsv, toByteString } from 'scrypt-ts'
 
 const anyoneWallet = new ProtoWallet('anyone')
@@ -81,7 +81,7 @@ const App: React.FC = () => {
       const signatureHex = Utils.toHex(Array.from(new Uint8Array(signature)))
 
       // Get locking script
-      const meter = new MeterContract(
+      const meter = new WisnaeMeterContract(
         BigInt(1),
         toByteString(pubKeyResult, false),
         toByteString(signatureHex, false)
@@ -141,7 +141,7 @@ const App: React.FC = () => {
     for (const result of lookupResult.outputs) {
       const tx = Transaction.fromBEEF(result.beef)
       const script = tx.outputs[result.outputIndex].lockingScript.toHex()
-      const meter = MeterContract.fromLockingScript(script) as MeterContract
+      const meter = WisnaeMeterContract.fromLockingScript(script) as WisnaeMeterContract
       const convertedToken = toEnvelopeFromBEEF(result.beef)
 
       const verifyResult = await anyoneWallet.verifySignature({
@@ -176,8 +176,8 @@ const App: React.FC = () => {
   const handleDecrement = async (meterIndex: number) => {
     // Spend the token and create a neww transaction
     const m = meters[meterIndex]
-    const meter = MeterContract.fromLockingScript(m.token.lockingScript)
-    const nextMeter = MeterContract.fromLockingScript(m.token.lockingScript) as MeterContract
+    const meter = WisnaeMeterContract.fromLockingScript(m.token.lockingScript)
+    const nextMeter = WisnaeMeterContract.fromLockingScript(m.token.lockingScript) as WisnaeMeterContract
     nextMeter.decrement()
     const nextScript = nextMeter.lockingScript
     const parsedFromTx = new bsv.Transaction(m.token.rawTX)
@@ -195,7 +195,7 @@ const App: React.FC = () => {
       }))
       self.to = { tx: bsvtx, inputIndex: 0 }
       self.from = { tx: parsedFromTx, outputIndex: 0 }
-        ; (self as MeterContract).decrementOnChain()
+        ; (self as WisnaeMeterContract).decrementOnChain()
     })
     console.log('Got unlocking script', unlockingScript)
     const broadcastActionParams = {
@@ -235,8 +235,8 @@ const App: React.FC = () => {
   const handleIncrement = async (meterIndex: number) => {
     // Spend the token and create a neww transaction
     const m = meters[meterIndex]
-    const meter = MeterContract.fromLockingScript(m.token.lockingScript)
-    const nextMeter = MeterContract.fromLockingScript(m.token.lockingScript) as MeterContract
+    const meter = WisnaeMeterContract.fromLockingScript(m.token.lockingScript)
+    const nextMeter = WisnaeMeterContract.fromLockingScript(m.token.lockingScript) as WisnaeMeterContract
     nextMeter.increment()
     const nextScript = nextMeter.lockingScript
     const parsedFromTx = new bsv.Transaction(m.token.rawTX)
@@ -254,7 +254,7 @@ const App: React.FC = () => {
       }))
       self.to = { tx: bsvtx, inputIndex: 0 }
       self.from = { tx: parsedFromTx, outputIndex: 0 }
-        ; (self as MeterContract).incrementOnChain()
+        ; (self as WisnaeMeterContract).incrementOnChain()
     })
     console.log('Got unlocking script', unlockingScript)
     const broadcastActionParams = {
