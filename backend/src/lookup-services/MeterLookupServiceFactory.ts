@@ -33,7 +33,7 @@ class MeterLookupService implements LookupService {
    * @throws Will throw an error if there is an issue with storing the record in the storage engine.
    */
   async outputAdded?(txid: string, outputIndex: number, outputScript: Script, topic: string): Promise<void> {
-    if (topic !== 'tm_wisnae_wisnae_meter') return
+    if (topic !== 'tm_wisnae_meter') return
     try {
       // Decode the Meter token fields from the Bitcoin outputScript with the contract class
       const meter = WisnaeMeterContract.fromLockingScript(outputScript.toHex()) as WisnaeMeterContract
@@ -62,7 +62,7 @@ class MeterLookupService implements LookupService {
    * @param topic - The topic associated with the spent output
    */
   async outputSpent?(txid: string, outputIndex: number, topic: string): Promise<void> {
-    if (topic !== 'tm_wisnae_wisnae_meter') return
+    if (topic !== 'tm_wisnae_meter') return
     await this.storage.deleteRecord(txid, outputIndex)
   }
 
@@ -73,7 +73,7 @@ class MeterLookupService implements LookupService {
    * @param topic - The topic associated with the deleted output
    */
   async outputDeleted?(txid: string, outputIndex: number, topic: string): Promise<void> {
-    if (topic !== 'tm_wisnae_wisnae_meter') return
+    if (topic !== 'tm_wisnae_meter') return
     await this.storage.deleteRecord(txid, outputIndex)
   }
 
@@ -86,7 +86,7 @@ class MeterLookupService implements LookupService {
     if (question.query === undefined || question.query === null) {
       throw new Error('A valid query must be provided!')
     }
-    if (question.service !== 'ls_wisnae_wisnae_meter') {
+    if (question.service !== 'ls_wisnae_meter') {
       throw new Error('Lookup service not supported!')
     }
 
