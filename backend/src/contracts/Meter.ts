@@ -30,7 +30,10 @@ export class WisnaeMeterContract extends SmartContract {
     }
 
     @method(SigHash.ANYONECANPAY_SINGLE)
-    public incrementOnChain() {
+    public incrementOnChain(creatorIdentityKey: ByteString) {
+        // Update the next owner identity key
+        this.setNextOwnerIdentityKey(creatorIdentityKey)
+
         // Ensure the person who last incremented the contract cannot do so immediately again.
         this.wasNotMe()
 
@@ -48,6 +51,12 @@ export class WisnaeMeterContract extends SmartContract {
     @method()
     increment(): void {
         this.count++
+    }
+
+    @method()
+    setNextOwnerIdentityKey(creatorIdentityKey: ByteString): void {
+        this.creatorIdentityKey = this.nextOwnerIdentityKey
+        this.nextOwnerIdentityKey = creatorIdentityKey
     }
 
     @method()

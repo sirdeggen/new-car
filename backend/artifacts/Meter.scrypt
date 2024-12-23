@@ -1,19 +1,22 @@
 
 contract WisnaeMeterContract {
   @state int count;
+  @state bytes nextOwnerIdentityKey;
   @state bytes creatorIdentityKey;
   @state bytes creatorSignature;
   bytes __scrypt_ts_ctx_hashoutputs;
   int __scrypt_ts_ctx_value;
-  constructor(int count, bytes creatorIdentityKey, bytes creatorSignature) {
+  constructor(int count, bytes nextOwnerIdentityKey, bytes creatorIdentityKey, bytes creatorSignature) {
     this.count = count;
     this.creatorIdentityKey = creatorIdentityKey;
     this.creatorSignature = creatorSignature;
+    this.nextOwnerIdentityKey = nextOwnerIdentityKey;
   }
   public function incrementOnChain(SigHashPreimage __scrypt_ts_txPreimage) {
     require(Tx.checkPreimageSigHashType(__scrypt_ts_txPreimage, SigHashType(b'c3')));
     this.__scrypt_ts_ctx_hashoutputs = SigHash.hashOutputs(__scrypt_ts_txPreimage);
     this.__scrypt_ts_ctx_value = SigHash.value(__scrypt_ts_txPreimage);
+    this.wasNotMe();
     this.increment();
     int amount = this.__scrypt_ts_ctx_value;
     bytes outputs = this.buildStateOutput(amount);
@@ -23,10 +26,20 @@ contract WisnaeMeterContract {
     this.count++;
     return true;
   }
+  function setNextOwnerIdentityKey(bytes creatorIdentityKey) : bool {
+    this.creatorIdentityKey = this.nextOwnerIdentityKey;
+    this.nextOwnerIdentityKey = creatorIdentityKey;
+    return true;
+  }
+  function wasNotMe() : bool {
+    require(this.creatorIdentityKey != this.nextOwnerIdentityKey);
+    return true;
+  }
   public function decrementOnChain(SigHashPreimage __scrypt_ts_txPreimage) {
     require(Tx.checkPreimageSigHashType(__scrypt_ts_txPreimage, SigHashType(b'c3')));
     this.__scrypt_ts_ctx_hashoutputs = SigHash.hashOutputs(__scrypt_ts_txPreimage);
     this.__scrypt_ts_ctx_value = SigHash.value(__scrypt_ts_txPreimage);
+    this.wasNotMe();
     this.decrement();
     int amount = this.__scrypt_ts_ctx_value;
     bytes outputs = this.buildStateOutput(amount);
