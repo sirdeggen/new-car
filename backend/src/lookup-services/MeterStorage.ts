@@ -10,7 +10,7 @@ export class MeterStorage {
    * @param {Db} db - connected mongo database instance
    */
   constructor(private readonly db: Db) {
-    this.records = db.collection<MeterRecord>('MeterRecords')
+    this.records = db.collection<MeterRecord>('WisnaeMeterRecords')
   }
 
   /**

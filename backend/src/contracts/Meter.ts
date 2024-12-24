@@ -65,7 +65,10 @@ export class WisnaeMeterContract extends SmartContract {
     }
 
     @method(SigHash.ANYONECANPAY_SINGLE)
-    public decrementOnChain() {
+    public decrementOnChain(creatorIdentityKey: ByteString) {
+        // Update the next owner identity key
+        this.setNextOwnerIdentityKey(creatorIdentityKey)
+
         // Ensure the person who last decremented the contract cannot do so immediately again.
         this.wasNotMe()
 

@@ -10,7 +10,7 @@ const anyoneWallet = new ProtoWallet('anyone')
 /**
  *  Note: The PushDrop package is used to decode BRC-48 style Pay-to-Push-Drop tokens.
  */
-export default class MeterTopicManager implements TopicManager {
+export default class WisnaeMeterTopicManager implements TopicManager {
   /**
    * Identify if the outputs are admissible depending on the particular protocol requirements
    * @param beef - The transaction data in BEEF format
@@ -33,7 +33,7 @@ export default class MeterTopicManager implements TopicManager {
           // This is where other overlay-level validation rules would be enforced
           // Verify creator signature came from creator public key
           const verifyResult = await anyoneWallet.verifySignature({
-            protocolID: [0, 'meter'],
+            protocolID: [0, 'wisnaemeter'],
             keyID: '1',
             counterparty: meter.creatorIdentityKey,
             data: [1],

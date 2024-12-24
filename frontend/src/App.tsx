@@ -77,7 +77,7 @@ const App: React.FC = () => {
 
       const signature = await createSignature({
         data: new Uint8Array([1]),
-        protocolID: [0, 'meter'],
+        protocolID: [0, 'wisnaemeter'],
         keyID: '1',
         counterparty: 'anyone'
       })
@@ -96,7 +96,7 @@ const App: React.FC = () => {
         outputs: [{
           script: lockingScript,
           satoshis: 1,
-          description: 'meter output'
+          description: 'wisnaemeter output'
         }]
       })
       const beefTx = toBEEFfromEnvelope(transactionEnvelope as EnvelopeEvidenceApi)
@@ -142,6 +142,7 @@ const App: React.FC = () => {
       if (lookupResult.type !== 'output-list') {
         throw new Error('Wrong result type!')
       }
+      console.log({ lookupResult })
       const parsedResults: Meter[] = []
       for (const result of lookupResult.outputs) {
         const tx = Transaction.fromBEEF(result.beef)
@@ -150,7 +151,7 @@ const App: React.FC = () => {
         const convertedToken = toEnvelopeFromBEEF(result.beef)
 
         const verifyResult = await anyoneWallet.verifySignature({
-          protocolID: [0, 'meter'],
+          protocolID: [0, 'wisnaemeter'],
           keyID: '1',
           counterparty: meter.creatorIdentityKey,
           data: [1],
@@ -173,6 +174,7 @@ const App: React.FC = () => {
           } as Token
         })
       }
+      console.log({ parsedResults })
       setMeters(parsedResults)
     } catch (error) {
       toast.error((error as Error).message)
@@ -207,7 +209,7 @@ const App: React.FC = () => {
         }))
         self.to = { tx: bsvtx, inputIndex: 0 }
         self.from = { tx: parsedFromTx, outputIndex: 0 }
-          ; (self as WisnaeMeterContract).decrementOnChain()
+          ; (self as WisnaeMeterContract).decrementOnChain(pubKeyResult)
       })
       console.log('Got unlocking script', unlockingScript)
       const broadcastActionParams = {
